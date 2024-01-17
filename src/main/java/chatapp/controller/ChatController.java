@@ -8,6 +8,8 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
+import java.util.Date;
+
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
@@ -19,17 +21,18 @@ public class ChatController {
         return message;
     }
 
-    @MessageMapping("/private-message")
+    /*@MessageMapping("/private-message")
     public Message receivePrivateMessage(@Payload Message message) {
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(),
                                                    "/private",
                                                    message);  // user/david/private
         return message;
-    }
+    }*/
 
     @MessageMapping("/chat")
     @SendTo("/topic/messages")
-    public ChatMessage sendMessage(ChatMessage message) {
-        return message;
+    public ChatMessage sendMessage(ChatMessage chatMessage) {
+        chatMessage.setTimestamp(new Date());
+        return chatMessage;
     }
 }
