@@ -21,4 +21,6 @@ public class User {
             unique = true,
             updatable = false)
     private String username;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 }
