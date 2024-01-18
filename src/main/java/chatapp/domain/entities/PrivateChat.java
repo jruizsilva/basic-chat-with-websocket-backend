@@ -20,13 +20,8 @@ public class PrivateChat {
             nullable = false)
     private Long id;
 
-    @ManyToMany
-    @JoinTable(
-            name = "chat_members",
-            joinColumns = @JoinColumn(name = "chat_id"),
-            inverseJoinColumns = @JoinColumn(name = "member_id"))
-    @ToString.Exclude
-    private List<User> members;
+    @Column(unique = true)
+    private String chatName;
 
     @OneToMany(mappedBy = "privateChat")
     @ToString.Exclude
