@@ -3,6 +3,8 @@ package chatapp.domain.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -21,6 +23,8 @@ public class User {
             unique = true,
             updatable = false)
     private String username;
-    @Enumerated(EnumType.STRING)
-    private Status status;
+
+    @ManyToMany(mappedBy = "members")
+    @ToString.Exclude
+    private List<PrivateChat> privateChats;
 }

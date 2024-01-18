@@ -1,6 +1,5 @@
 package chatapp.controller;
 
-import chatapp.domain.entities.Status;
 import chatapp.domain.entities.User;
 import chatapp.domain.request.UserRequest;
 import chatapp.persistence.UserRepository;
@@ -24,30 +23,24 @@ public class UserController {
                         UserRequest userRequest) {
         User user = User.builder()
                         .username(userRequest.getUsername())
-                        .status(Status.ONLINE)
                         .build();
         User userCreated = userRepository.save(user);
 
-        // Notificar a /topic/users
         messagingTemplate.convertAndSend("/topic/users",
-                                         this.findAllUsersOnline());
+                                         this.findAllUsers());
 
         return userCreated;
     }
 
-    @PatchMapping("/logout")
-    private void logout(@RequestBody User userRequest) {
-        User user = userRepository.findUserByUsername(userRequest.getUsername())
-                                  .orElseThrow(() -> new RuntimeException("user not found"));
-        user.setStatus(Status.OFFLINE);
-        userRepository.save(user);
-        // Notificar a /topic/users
+    @PatchMapping("/deleteUser")
+    private void deleteUser(@RequestBody User userRequest) {
+        userRepository.deleteById(userRequest.getId());
         messagingTemplate.convertAndSend("/topic/users",
-                                         this.findAllUsersOnline());
+                                         this.findAllUsers());
     }
 
     @GetMapping
-    public List<User> findAllUsersOnline() {
-        return userRepository.findAllUsersByStatus(Status.ONLINE);
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
     }
 }
