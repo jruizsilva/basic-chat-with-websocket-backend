@@ -1,5 +1,6 @@
 package chatapp.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,6 +25,7 @@ public class PrivateMessage {
     private String content;
     private Date timestamp;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "chat_id")
     private PrivateChat privateChat;

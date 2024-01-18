@@ -1,5 +1,6 @@
 package chatapp.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class PrivateChat {
     @Column(unique = true)
     private String chatName;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "privateChat")
     @ToString.Exclude
     private List<PrivateMessage> messages;

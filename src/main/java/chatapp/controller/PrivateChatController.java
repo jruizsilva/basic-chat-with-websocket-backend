@@ -2,8 +2,8 @@ package chatapp.controller;
 
 import chatapp.domain.entities.PrivateChat;
 import chatapp.domain.entities.PrivateMessage;
+import chatapp.domain.request.AddPrivateMessageToPrivateChat;
 import chatapp.domain.request.PrivateChatRequest;
-import chatapp.domain.request.PrivateMessageRequest;
 import chatapp.persistence.PrivateChatRepository;
 import chatapp.persistence.PrivateMessageRepository;
 import jakarta.validation.Valid;
@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,22 +37,23 @@ public class PrivateChatController {
     }
 
     @PatchMapping
-    public PrivateChat addMessageToChat(@RequestBody @Valid
-                                        PrivateMessageRequest privateMessageRequest,
-                                        @RequestParam String chatName) {
-        Optional<PrivateChat> privateChatOptional = findPrivateChatByChatName(chatName);
+    public PrivateChat addPrivateMessageToPrivateChat(@RequestBody @Valid
+                                                      AddPrivateMessageToPrivateChat privateMessageRequest) {
+        Optional<PrivateChat> privateChatOptional = findPrivateChatByChatName(privateMessageRequest.getChatName());
         if (privateChatOptional.isEmpty()) {
             throw new RuntimeException("chat not found");
         }
         PrivateChat privateChat = privateChatOptional.get();
         PrivateMessage privateMessage = PrivateMessage.builder()
+                                                      .privateChat(privateChat)
                                                       .content(privateMessageRequest.getContent())
                                                       .sender(privateMessageRequest.getSender())
                                                       .receiver(privateMessageRequest.getReceiver())
                                                       .build();
         PrivateMessage privateMessageSaved = privateMessageRepository.save(privateMessage);
-        privateChat.getMessages()
-                   .add(privateMessageSaved);
+        List<PrivateMessage> messages = privateChat.getMessages();
+        messages.add(privateMessageSaved);
+        privateChat.setMessages(messages);
 
         return privateChatRepository.save(privateChat);
     }

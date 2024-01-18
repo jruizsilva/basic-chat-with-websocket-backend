@@ -9,12 +9,13 @@ import lombok.*;
 @ToString
 @AllArgsConstructor
 @Builder
-public class PrivateMessageRequest {
+public class AddPrivateMessageToPrivateChat {
     @NotBlank
     private String receiver;
     @NotBlank
     private String sender;
     @NotBlank
     private String content;
+    @NotBlank
+    private String chatName;
 }
-
