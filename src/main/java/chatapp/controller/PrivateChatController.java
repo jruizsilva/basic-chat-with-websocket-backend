@@ -13,6 +13,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/private-chat")
+@CrossOrigin
 public class PrivateChatController {
     private final PrivateChatRepository privateChatRepository;
 
