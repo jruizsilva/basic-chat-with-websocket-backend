@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/public-messages")
-@CrossOrigin
 public class PublicMessageController {
     private final SimpMessagingTemplate messagingTemplate;
     private final PublicMessageRepository publicMessageRepository;

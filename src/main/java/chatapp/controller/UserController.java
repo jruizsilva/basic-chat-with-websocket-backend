@@ -13,7 +13,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-@CrossOrigin
 public class UserController {
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
