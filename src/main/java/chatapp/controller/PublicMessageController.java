@@ -39,5 +39,8 @@ public class PublicMessageController {
     @DeleteMapping
     void deleteAllPublicMesaggesBySender(@RequestParam String sender) {
         publicMessageRepository.deleteAllPublicMesaggesBySender(sender);
+        List<PublicMessage> publicMessageList = this.findAllPublicMessages();
+        messagingTemplate.convertAndSend("/topic/public-messages",
+                                         publicMessageList);
     }
 }
