@@ -8,6 +8,7 @@ import chatapp.persistence.PrivateChatRepository;
 import chatapp.persistence.PrivateMessageRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class PrivateChatController {
     private final PrivateChatRepository privateChatRepository;
     private final PrivateMessageRepository privateMessageRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @PostMapping
     public PrivateChat createPrivateChat(@RequestBody @Valid PrivateChatRequest privateChatRequest) {
@@ -55,7 +57,17 @@ public class PrivateChatController {
         messages.add(privateMessageSaved);
         privateChat.setMessages(messages);
 
-        return privateChatRepository.save(privateChat);
+        PrivateChat privateChatSaved = privateChatRepository.save(privateChat);
+
+        String chatName = privateChat.getChatName();
+        String[] usernames = chatName.split("_");
+
+        for (String username : usernames) {
+            messagingTemplate.convertAndSendToUser(username,
+                                                   "/queue/messages",
+                                                   privateChatSaved);
+        }
+        return privateChatSaved;
     }
 
     @GetMapping
