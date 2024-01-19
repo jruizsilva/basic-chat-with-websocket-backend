@@ -1,28 +1,24 @@
 package chatapp.config;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig {
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173",
-                                                      "https://chatapp-u2kw.onrender.com",
-                                                      "https://basic-chat-with-websocket-frontend.vercel.app"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+@EnableWebMvc
+public class CorsConfig implements WebMvcConfigurer {
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",
-                                         configuration);
-        return source;
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("https://chatapp-u2kw.onrender.com",
+                                "https://basic-chat-with-websocket-frontend.vercel.app")
+                .allowedMethods("GET",
+                                "POST",
+                                "PUT",
+                                "DELETE",
+                                "OPTIONS") // Métodos HTTP permitidos
+                .allowedHeaders("*"); // Encabezados permitidos
     }
 }
