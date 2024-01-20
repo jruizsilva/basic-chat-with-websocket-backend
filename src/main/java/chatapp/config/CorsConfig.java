@@ -19,13 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
                                 "PUT",
                                 "DELETE",
                                 "OPTIONS") // Métodos HTTP permitidos
-                .allowedHeaders("*"); // Encabezados permitidos
-
-        // Add this line to handle preflight requests
-        registry.addMapping("/**")
-                .allowedMethods("OPTIONS")
                 .allowedHeaders("*")
-                .allowedOrigins("https://basic-chat-with-websocket-frontend.vercel.app")
                 .allowCredentials(true)
                 .maxAge(3600);
     }
