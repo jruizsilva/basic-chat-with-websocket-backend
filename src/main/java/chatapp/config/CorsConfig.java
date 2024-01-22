@@ -11,7 +11,8 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://chatapp-u2kw.onrender.com",
+                .allowedOrigins("http://localhost:5173",
+                                "https://chatapp-u2kw.onrender.com",
                                 "https://basic-chat-with-websocket-frontend.vercel.app")
                 .allowedMethods("GET",
                                 "POST",
