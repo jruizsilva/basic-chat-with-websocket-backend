@@ -1,4 +1,4 @@
-package chatapp.domain.entities;
+package chatapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -13,8 +13,8 @@ import java.util.List;
 @Setter
 @ToString
 @Entity
-@Table(name = "private_chat")
-public class PrivateChat {
+@Table(name = "chat_rooms")
+public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",
@@ -25,7 +25,7 @@ public class PrivateChat {
     private String chatName;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "privateChat")
+    @OneToMany(mappedBy = "chatRoom")
     @ToString.Exclude
     private List<PrivateMessage> messages;
 }

@@ -1,4 +1,4 @@
-package chatapp.domain.entities;
+package chatapp.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

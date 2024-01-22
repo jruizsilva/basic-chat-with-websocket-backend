@@ -1,7 +1,7 @@
 package chatapp.controller;
 
-import chatapp.domain.entities.User;
-import chatapp.domain.request.UserRequest;
+import chatapp.entities.User;
+import chatapp.http.request.UserRequest;
 import chatapp.persistence.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

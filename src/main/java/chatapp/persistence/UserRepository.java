@@ -1,6 +1,6 @@
 package chatapp.persistence;
 
-import chatapp.domain.entities.User;
+import chatapp.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

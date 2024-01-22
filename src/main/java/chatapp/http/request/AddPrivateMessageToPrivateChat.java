@@ -1,4 +1,4 @@
-package chatapp.domain.request;
+package chatapp.http.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

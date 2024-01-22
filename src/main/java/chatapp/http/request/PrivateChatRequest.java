@@ -1,4 +1,4 @@
-package chatapp.domain.request;
+package chatapp.http.request;
 
 import lombok.*;
 

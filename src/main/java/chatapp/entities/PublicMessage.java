@@ -1,6 +1,5 @@
-package chatapp.domain.entities;
+package chatapp.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,22 +12,16 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "private_messages")
-public class PrivateMessage {
+@Table(name = "public_messages")
+public class PublicMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",
             nullable = false)
     private Long id;
-    private String receiver;
     private String sender;
     private String content;
     private Date timestamp;
-
-    @JsonBackReference
-    @ManyToOne
-    @JoinColumn(name = "chat_id")
-    private PrivateChat privateChat;
 
     @PrePersist
     private void antesDePersistir() {

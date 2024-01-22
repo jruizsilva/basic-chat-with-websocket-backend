@@ -1,7 +1,7 @@
 package chatapp.controller;
 
-import chatapp.domain.entities.PublicMessage;
-import chatapp.domain.request.PublicMessageRequest;
+import chatapp.entities.PublicMessage;
+import chatapp.http.request.PublicMessageRequest;
 import chatapp.persistence.PublicMessageRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
