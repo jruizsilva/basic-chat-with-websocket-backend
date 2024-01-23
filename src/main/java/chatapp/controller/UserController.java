@@ -32,7 +32,7 @@ public class UserController {
         messagingTemplate.convertAndSend("/topic/users",
                                          this.findAllUsers());
         PublicMessageRequest publicMessage = PublicMessageRequest.builder()
-                                                                 .content(userCreated.getUsername() + " join!")
+                                                                 .content(userCreated.getUsername() + " joined!")
                                                                  .type(MessageType.JOIN)
                                                                  .sender(userCreated.getUsername())
                                                                  .build();
