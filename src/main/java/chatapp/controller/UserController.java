@@ -1,8 +1,11 @@
 package chatapp.controller;
 
+import chatapp.entities.MessageType;
 import chatapp.entities.User;
+import chatapp.http.request.PublicMessageRequest;
 import chatapp.http.request.UserRequest;
 import chatapp.persistence.UserRepository;
+import chatapp.service.PublicMessageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -16,6 +19,7 @@ import java.util.List;
 public class UserController {
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final PublicMessageService publicMessageService;
 
     @PostMapping
     public User addUser(@RequestBody @Valid
@@ -27,6 +31,15 @@ public class UserController {
 
         messagingTemplate.convertAndSend("/topic/users",
                                          this.findAllUsers());
+        messagingTemplate.convertAndSend("/topic/connected",
+                                         userCreated);
+        PublicMessageRequest publicMessage = PublicMessageRequest.builder()
+                                                                 .content("User " + userCreated.getUsername() + " join!")
+                                                                 .type(MessageType.JOIN)
+                                                                 .sender(userCreated.getUsername())
+                                                                 .build();
+
+        publicMessageService.addPublicMessage(publicMessage);
 
         return userCreated;
     }
@@ -36,6 +49,15 @@ public class UserController {
         userRepository.deleteById(userRequest.getId());
         messagingTemplate.convertAndSend("/topic/users",
                                          this.findAllUsers());
+        messagingTemplate.convertAndSend("/topic/disconnected",
+                                         userRequest);
+        PublicMessageRequest publicMessage = PublicMessageRequest.builder()
+                                                                 .content("User " + userRequest.getUsername() + " left!")
+                                                                 .type(MessageType.JOIN)
+                                                                 .sender(userRequest.getUsername())
+                                                                 .build();
+
+        publicMessageService.addPublicMessage(publicMessage);
     }
 
     @GetMapping

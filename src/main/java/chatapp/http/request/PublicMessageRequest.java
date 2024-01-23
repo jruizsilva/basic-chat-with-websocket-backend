@@ -1,5 +1,6 @@
 package chatapp.http.request;
 
+import chatapp.entities.MessageType;
 import lombok.*;
 
 @Getter
@@ -11,4 +12,5 @@ import lombok.*;
 public class PublicMessageRequest {
     private String sender;
     private String content;
+    private MessageType type;
 }

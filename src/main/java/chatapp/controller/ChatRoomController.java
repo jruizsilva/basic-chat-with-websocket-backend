@@ -42,7 +42,6 @@ public class ChatRoomController {
     @PatchMapping
     public ChatRoom addPrivateMessageToPrivateChat(@RequestBody @Valid
                                                    AddPrivateMessageToPrivateChat privateMessageRequest) {
-        System.out.println("addPrivateMessageToPrivateChat");
         Optional<ChatRoom> privateChatOptional = findChatRoomOptionalByChatName(privateMessageRequest.getChatName());
         if (privateChatOptional.isEmpty()) {
             throw new RuntimeException("chat not found");

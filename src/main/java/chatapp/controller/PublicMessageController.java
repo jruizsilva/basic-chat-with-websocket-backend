@@ -2,10 +2,10 @@ package chatapp.controller;
 
 import chatapp.entities.PublicMessage;
 import chatapp.http.request.PublicMessageRequest;
-import chatapp.persistence.PublicMessageRepository;
+import chatapp.service.PublicMessageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,32 +14,22 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/public-messages")
 public class PublicMessageController {
-    private final SimpMessagingTemplate messagingTemplate;
-    private final PublicMessageRepository publicMessageRepository;
+    private final PublicMessageService publicMessageService;
 
     @PostMapping
-    public PublicMessage addPublicMessage(@RequestBody @Valid PublicMessageRequest publicMessageRequest) {
-        PublicMessage publicMessage = PublicMessage.builder()
-                                                   .content(publicMessageRequest.getContent())
-                                                   .sender(publicMessageRequest.getSender())
-                                                   .build();
-        PublicMessage publicMessageSaved = publicMessageRepository.save(publicMessage);
-        List<PublicMessage> publicMessageList = this.findAllPublicMessages();
-        messagingTemplate.convertAndSend("/topic/public-messages",
-                                         publicMessageList);
-        return publicMessageSaved;
+    public ResponseEntity<PublicMessage> addPublicMessage(@RequestBody @Valid PublicMessageRequest publicMessageRequest) {
+        return ResponseEntity.ok(publicMessageService.addPublicMessage(publicMessageRequest));
     }
 
     @GetMapping
-    public List<PublicMessage> findAllPublicMessages() {
-        return publicMessageRepository.findAll();
+    public ResponseEntity<List<PublicMessage>> findAllPublicMessages() {
+        return ResponseEntity.ok(publicMessageService.findAllPublicMessages());
     }
 
     @DeleteMapping
-    void deleteAllPublicMesaggesBySender(@RequestParam String sender) {
-        publicMessageRepository.deleteAllPublicMesaggesBySender(sender);
-        List<PublicMessage> publicMessageList = this.findAllPublicMessages();
-        messagingTemplate.convertAndSend("/topic/public-messages",
-                                         publicMessageList);
+    public ResponseEntity<Void> deleteAllPublicMesaggesBySender(@RequestParam String sender) {
+        publicMessageService.deleteAllPublicMesaggesBySender(sender);
+        return ResponseEntity.noContent()
+                             .build();
     }
 }

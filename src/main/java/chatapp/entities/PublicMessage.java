@@ -21,6 +21,7 @@ public class PublicMessage {
     private Long id;
     private String sender;
     private String content;
+    private MessageType type;
     private Date timestamp;
 
     @PrePersist
