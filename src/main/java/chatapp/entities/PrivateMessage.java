@@ -24,8 +24,6 @@ public class PrivateMessage {
     private String sender;
     private String content;
     private Date timestamp;
-    @Enumerated(EnumType.STRING)
-    private MessageStatus status;
 
     @JsonBackReference
     @ManyToOne

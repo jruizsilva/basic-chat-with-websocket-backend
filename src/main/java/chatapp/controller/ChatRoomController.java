@@ -1,7 +1,6 @@
 package chatapp.controller;
 
 import chatapp.entities.ChatRoom;
-import chatapp.entities.MessageStatus;
 import chatapp.entities.NewMessage;
 import chatapp.entities.PrivateMessage;
 import chatapp.http.request.AddPrivateMessageToPrivateChat;
@@ -54,7 +53,6 @@ public class ChatRoomController {
                                                       .content(privateMessageRequest.getContent())
                                                       .sender(privateMessageRequest.getSender())
                                                       .receiver(privateMessageRequest.getReceiver())
-                                                      .status(MessageStatus.UNREAD)
                                                       .build();
         PrivateMessage privateMessageSaved = privateMessageRepository.save(privateMessage);
         List<PrivateMessage> messages = chatRoom.getMessages();
@@ -71,12 +69,13 @@ public class ChatRoomController {
                                                    chatRoomSaved);
         }
 
-        messagingTemplate.convertAndSend("/topic/notification",
-                                         NewMessage.builder()
-                                                   .chatName(privateMessageRequest.getChatName())
-                                                   .sender(privateMessageRequest.getSender())
-                                                   .content(privateMessageRequest.getContent())
-                                                   .build());
+        messagingTemplate.convertAndSendToUser(privateMessageRequest.getReceiver(),
+                                               "/notification",
+                                               NewMessage.builder()
+                                                         .chatName(privateMessageRequest.getChatName())
+                                                         .sender(privateMessageRequest.getSender())
+                                                         .content(privateMessageRequest.getContent())
+                                                         .build());
         return chatRoomSaved;
     }
 
