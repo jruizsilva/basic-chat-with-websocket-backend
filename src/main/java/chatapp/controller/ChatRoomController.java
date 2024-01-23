@@ -2,6 +2,7 @@ package chatapp.controller;
 
 import chatapp.entities.ChatRoom;
 import chatapp.entities.MessageStatus;
+import chatapp.entities.NewMessage;
 import chatapp.entities.PrivateMessage;
 import chatapp.http.request.AddPrivateMessageToPrivateChat;
 import chatapp.http.request.PrivateChatRequest;
@@ -9,6 +10,7 @@ import chatapp.persistence.ChatRoomRepository;
 import chatapp.persistence.PrivateMessageRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +43,7 @@ public class ChatRoomController {
     @PatchMapping
     public ChatRoom addPrivateMessageToPrivateChat(@RequestBody @Valid
                                                    AddPrivateMessageToPrivateChat privateMessageRequest) {
+        System.out.println("addPrivateMessageToPrivateChat");
         Optional<ChatRoom> privateChatOptional = findChatRoomOptionalByChatName(privateMessageRequest.getChatName());
         if (privateChatOptional.isEmpty()) {
             throw new RuntimeException("chat not found");
@@ -58,16 +61,22 @@ public class ChatRoomController {
         messages.add(privateMessageSaved);
         chatRoom.setMessages(messages);
 
-        ChatRoom chatRoomSaved = chatRoomRepository.save(chatRoom);
-
         String chatName = chatRoom.getChatName();
         String[] usernames = chatName.split("_");
+        ChatRoom chatRoomSaved = chatRoomRepository.save(chatRoom);
 
         for (String username : usernames) {
             messagingTemplate.convertAndSendToUser(username,
                                                    "/queue/messages",
                                                    chatRoomSaved);
         }
+
+        messagingTemplate.convertAndSend("/topic/notification",
+                                         NewMessage.builder()
+                                                   .chatName(privateMessageRequest.getChatName())
+                                                   .sender(privateMessageRequest.getSender())
+                                                   .content(privateMessageRequest.getContent())
+                                                   .build());
         return chatRoomSaved;
     }
 
@@ -75,4 +84,12 @@ public class ChatRoomController {
     public Optional<ChatRoom> findChatRoomOptionalByChatName(@RequestParam String chatName) {
         return chatRoomRepository.findChatRoomByChatName(chatName);
     }
+
+    @GetMapping("/{chatName}")
+    public ResponseEntity<ChatRoom> findChatRoomByChatName(@PathVariable("chatName") String chatName) {
+        ChatRoom chatRoom = chatRoomRepository.findChatRoomByChatName(chatName)
+                                              .orElseThrow(() -> new RuntimeException("chat room not found"));
+        return ResponseEntity.ok(chatRoom);
+    }
+
 }
