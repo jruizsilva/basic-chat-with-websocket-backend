@@ -1,6 +1,5 @@
 package chatapp.service.impl;
 
-import chatapp.entities.MessageType;
 import chatapp.entities.PublicMessage;
 import chatapp.http.request.PublicMessageRequest;
 import chatapp.persistence.PublicMessageRepository;
@@ -22,7 +21,7 @@ public class PublicMessageServiceImpl implements PublicMessageService {
         PublicMessage publicMessage = PublicMessage.builder()
                                                    .content(publicMessageRequest.getContent())
                                                    .sender(publicMessageRequest.getSender())
-                                                   .type(MessageType.MESSAGE)
+                                                   .type(publicMessageRequest.getType())
                                                    .build();
         PublicMessage publicMessageSaved = publicMessageRepository.save(publicMessage);
         List<PublicMessage> publicMessageList = this.findAllPublicMessages();

@@ -31,10 +31,8 @@ public class UserController {
 
         messagingTemplate.convertAndSend("/topic/users",
                                          this.findAllUsers());
-        messagingTemplate.convertAndSend("/topic/connected",
-                                         userCreated);
         PublicMessageRequest publicMessage = PublicMessageRequest.builder()
-                                                                 .content("User " + userCreated.getUsername() + " join!")
+                                                                 .content(userCreated.getUsername() + " join!")
                                                                  .type(MessageType.JOIN)
                                                                  .sender(userCreated.getUsername())
                                                                  .build();
@@ -49,14 +47,11 @@ public class UserController {
         userRepository.deleteById(userRequest.getId());
         messagingTemplate.convertAndSend("/topic/users",
                                          this.findAllUsers());
-        messagingTemplate.convertAndSend("/topic/disconnected",
-                                         userRequest);
         PublicMessageRequest publicMessage = PublicMessageRequest.builder()
-                                                                 .content("User " + userRequest.getUsername() + " left!")
-                                                                 .type(MessageType.JOIN)
+                                                                 .content(userRequest.getUsername() + " left!")
+                                                                 .type(MessageType.LEAVE)
                                                                  .sender(userRequest.getUsername())
                                                                  .build();
-
         publicMessageService.addPublicMessage(publicMessage);
     }
 
